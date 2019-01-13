@@ -1,20 +1,31 @@
 package response;
 
+import interfaces.IRoot;
 import parsers.FileHelper;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
-public class HTTPResponse {
+public class HTTPResponse implements IRoot {
+    private static final String FILE_NOT_FOUND = "404.html";
     // we get character output stream to client (for headers)
     private PrintWriter writer;
     // get binary output stream to client (for requested data)
     private BufferedOutputStream output;
 
-    public HTTPResponse(java.io.OutputStream stream) {
-        writer = new PrintWriter(stream);
-        output = new BufferedOutputStream(stream);
+    public HTTPResponse(java.net.Socket socket) {
+        try {
+            writer = new PrintWriter(socket.getOutputStream());
+            output = new BufferedOutputStream(socket.getOutputStream());
+        } catch (FileNotFoundException e) {
+            response(
+                    "404 File Not Found",
+                    "text/html",
+                    new File(new File("."), FILE_NOT_FOUND)
+            );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setStartingLine(String status) {

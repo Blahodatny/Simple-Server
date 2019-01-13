@@ -9,10 +9,12 @@ public class RequestParser {
     // we read characters from the client via input stream on the socket
     private BufferedReader reader;
 
-    public RequestParser(java.io.InputStream input) {
+    public RequestParser(java.net.Socket socket) {
         try {
             reader = new BufferedReader(
-                    new java.io.InputStreamReader(input)
+                    new java.io.InputStreamReader(
+                            socket.getInputStream()
+                    )
             );
             // we parse the request with a string tokenizer
             tokenizer = new StringTokenizer(
