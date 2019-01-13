@@ -1,15 +1,13 @@
 package parsers;
 
 public class FileHelper {
-    public byte[] readFileData(java.io.File file, int length) {
+    public byte[] readFileData(java.io.File file, int length) throws java.io.IOException {
         var data = new byte[length];
         try (var fileIn = new java.io.FileInputStream(file)) {
             System.out.println(
                     "The total number of bytes read into the buffer: "
                             + fileIn.read(data)
             );
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
         }
         return data;
     }
