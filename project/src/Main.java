@@ -12,7 +12,7 @@ public class Main {
         while (true) {
             System.out.println("Connection opened. (" + new java.util.Date() + ")");
             // create dedicated thread to manage the client connection
-            new Thread(new JavaHTTPServer(socket.accept())).start();
+            new Thread(new HTTPServer(socket.accept())).start();
         }
     }
 }
