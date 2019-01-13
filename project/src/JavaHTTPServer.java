@@ -1,8 +1,9 @@
+import parsers.FileHelper;
 import parsers.RequestParser;
+import response.HTTPResponse;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Date;
 
 public class JavaHTTPServer implements Runnable {
     private static final File WEB_ROOT = new File(".");
@@ -21,19 +22,14 @@ public class JavaHTTPServer implements Runnable {
     public void run() {
         // we manage our particular client connection
         RequestParser in = null;
-        PrintWriter out = null;
-        BufferedOutputStream dataOut = null;
+        HTTPResponse out = null;
         String fileRequested = null;
 
         try {
-            // we read characters from the client via input stream on the socket
             in = new RequestParser(socket.getInputStream());
-            // we get character output stream to client (for headers)
-            out = new PrintWriter(socket.getOutputStream());
-            // get binary output stream to client (for requested data)
-            dataOut = new BufferedOutputStream(socket.getOutputStream());
+            out = new HTTPResponse(socket.getOutputStream());
 
-            String method = in.getMethod();
+            var method = in.getMethod();
             fileRequested = in.getRequestedResource();
 
             // we support only GET and HEAD methods, we check
@@ -41,59 +37,30 @@ public class JavaHTTPServer implements Runnable {
                 if (VERBOSE)
                     System.out.println("501 Not Implemented : " + method + " method.");
 
-                // we return the not supported file to the client
-                File file = new File(WEB_ROOT, METHOD_NOT_SUPPORTED);
-                int fileLength = (int) file.length();
-                String contentMimeType = "text/html";
-                //read content to return to client
-                byte[] fileData = readFileData(file, fileLength);
-
-
-//                // we send HTTP Headers with data to client
-//                out.println("HTTP/1.1 501 Not Implemented");
-//                out.println("Server: Java HTTP Server from SSaurel : 1.0");
-//                out.println("Date: " + new Date());
-//                out.println("Content-type: " + contentMimeType);
-//                out.println("Content-length: " + fileLength);
-//                out.println(); // blank line between headers and content, very important !
-//                out.flush(); // flush character output stream buffer
-                // file
-                dataOut.write(fileData, 0, fileLength);
-                dataOut.flush();
-
+                out.response(
+                        "501 Not Implemented",
+                        "text/html",
+                        new File(WEB_ROOT, METHOD_NOT_SUPPORTED)
+                        // we return the not supported file to the client
+                );
             } else {
                 // GET or HEAD method
-                if (fileRequested.endsWith("/")) {
+                if (fileRequested.endsWith("/"))
                     fileRequested += DEFAULT_FILE;
-                }
 
-                File file = new File(WEB_ROOT, fileRequested);
-                int fileLength = (int) file.length();
-                String content = getContentType(fileRequested);
+                out.response(
+                        "200 OK",
+                        new FileHelper().getContentType(fileRequested),
+                        new File(WEB_ROOT, fileRequested)
+                );
 
-                if (method.equals("GET")) { // GET method so we return content
-                    byte[] fileData = readFileData(file, fileLength);
-
-//                    // send HTTP Headers
-//                    out.println("HTTP/1.1 200 OK");
-//                    out.println("Server: Java HTTP Server from SSaurel : 1.0");
-//                    out.println("Date: " + new Date());
-//                    out.println("Content-type: " + content);
-//                    out.println("Content-length: " + fileLength);
-//                    out.println(); // blank line between headers and content, very important !
-//                    out.flush(); // flush character output stream buffer
-
-                    dataOut.write(fileData, 0, fileLength);
-                    dataOut.flush();
-                }
-
-                if (VERBOSE) {
-                    System.out.println("File " + fileRequested + " of type " + content + " returned");
-                }
+                if (VERBOSE)
+                    System.out.println("File " + fileRequested + " returned");
 
             }
 
         } catch (FileNotFoundException fnfe) {
+
             try {
                 fileNotFound(out, dataOut, fileRequested);
             } catch (IOException ioe) {
@@ -116,29 +83,6 @@ public class JavaHTTPServer implements Runnable {
         }
 
 
-    }
-
-    private byte[] readFileData(File file, int fileLength) throws IOException {
-        FileInputStream fileIn = null;
-        byte[] fileData = new byte[fileLength];
-
-        try {
-            fileIn = new FileInputStream(file);
-            fileIn.read(fileData);
-        } finally {
-            if (fileIn != null)
-                fileIn.close();
-        }
-
-        return fileData;
-    }
-
-    // return supported MIME Types
-    private String getContentType(String fileRequested) {
-        if (fileRequested.endsWith(".htm") || fileRequested.endsWith(".html"))
-            return "text/html";
-        else
-            return "text/plain";
     }
 
     private void fileNotFound(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException {

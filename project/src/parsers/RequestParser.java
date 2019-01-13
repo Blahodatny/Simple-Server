@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 public class RequestParser {
     private StringTokenizer tokenizer;
+    // we read characters from the client via input stream on the socket
     private BufferedReader reader;
 
     public RequestParser(java.io.InputStream input) {
