@@ -51,7 +51,7 @@ public class HTTPServer implements Runnable {
             if (exception.getClass() == FileNotFoundException.class)
                 try {
                     out.response(
-                            "404 File Not Found",
+                            "404 Not Found",
                             "text/html",
                             new File(FILE_NOT_FOUND)
                     );

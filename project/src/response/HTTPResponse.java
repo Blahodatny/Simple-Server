@@ -44,7 +44,6 @@ public class HTTPResponse {
         var length = (int) file.length();
         setHeaders(content, length);
         setBody(new parsers.FileHelper().readFileData(file, length), length);
-
     }
 
     public void close() throws IOException {
