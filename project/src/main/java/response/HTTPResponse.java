@@ -4,7 +4,7 @@ import parsers.FileReader;
 
 import java.net.Socket;
 
-public class HTTPResponse extends HTTPBuilder {
+public class HTTPResponse extends ResponseBuilder {
     public HTTPResponse(Socket socket) {
         super(socket);
     }

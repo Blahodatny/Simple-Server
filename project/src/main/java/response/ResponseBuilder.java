@@ -6,13 +6,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Date;
 
-class HTTPBuilder {
+class ResponseBuilder {
     // we get character output stream to client (for headers)
     private PrintWriter writer;
     // get binary output stream to client (for requested data)
     private BufferedOutputStream output;
 
-    HTTPBuilder(Socket socket) {
+    ResponseBuilder(Socket socket) {
         try {
             writer = new PrintWriter(socket.getOutputStream());
             output = new BufferedOutputStream(socket.getOutputStream());
