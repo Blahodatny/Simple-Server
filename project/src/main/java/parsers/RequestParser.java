@@ -2,6 +2,8 @@ package parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.StringTokenizer;
 
 public class RequestParser {
@@ -9,10 +11,10 @@ public class RequestParser {
     // we read characters from the client via input stream on the socket
     private BufferedReader reader;
 
-    public RequestParser(java.net.Socket socket) {
+    public RequestParser(Socket socket) {
         try {
             reader = new BufferedReader(
-                    new java.io.InputStreamReader(
+                    new InputStreamReader(
                             socket.getInputStream()
                     )
             );
