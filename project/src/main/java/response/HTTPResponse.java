@@ -4,6 +4,8 @@ import parsers.FileReader;
 
 import java.net.Socket;
 
+import static java.util.regex.Pattern.compile;
+
 public class HTTPResponse extends ResponseBuilder {
     public HTTPResponse(Socket socket) {
         super(socket);
@@ -21,7 +23,7 @@ public class HTTPResponse extends ResponseBuilder {
         switch (method) {
             case "GET":
             case "HEAD":
-                path = path.equals("/") ? "index.html" : path.substring(1);
+                path = compile("^/+").matcher(path).matches() ? "index.html" : path.substring(1);
                 data = reader.readFileData(path);
                 if (data == null)
                     set("404 Not Found", reader.readFileData("404.html"));
