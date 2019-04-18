@@ -1,7 +1,6 @@
+import java.net.Socket;
 import parsers.RequestParser;
 import response.HTTPResponse;
-
-import java.net.Socket;
 
 class HTTPServer implements Runnable {
     // Client Connection via Socket Class

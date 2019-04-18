@@ -8,7 +8,9 @@ class Main {
 
     public static void main(String[] args) throws IOException {
         var socket = new ServerSocket(PORT);
-        System.out.println("Server started.\nListening for connections on port: " + PORT + " ...\n");
+        System.out.println(
+                "Server started.\nListening for connections on port: " + PORT +
+                        " ...\n");
 
         // we listen until user halts server execution
         while (true) {

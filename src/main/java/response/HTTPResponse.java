@@ -1,8 +1,7 @@
 package response;
 
-import parsers.FileReader;
-
 import java.net.Socket;
+import parsers.FileReader;
 
 import static java.util.regex.Pattern.compile;
 
@@ -22,13 +21,19 @@ public class HTTPResponse extends ResponseBuilder {
         switch (method) {
             case "GET":
             case "HEAD":
-                path = compile("^/+").matcher(path).matches() ? "index.html" : path.substring(1);
+                path = compile("^/+").matcher(path).matches() ?
+                        "index.html" :
+                        path.substring(1);
                 var data = reader.readFileData(path);
                 if (data == null)
                     set("404 Not Found", reader.readFileData("404.html"));
                 else {
                     setStartingLine("200 OK");
-                    setHeaders("text/" + (path.endsWith("html") ? "html" : "plain"), data.length);
+                    setHeaders(
+                            "text/" +
+                                    (path.endsWith("html") ? "html" : "plain"),
+                            data.length
+                    );
                     if (method.equals("GET"))
                         setBody(data);
                 }

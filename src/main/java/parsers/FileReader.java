@@ -10,6 +10,12 @@ public class FileReader {
                 return stream.readAllBytes();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         return null;
     }

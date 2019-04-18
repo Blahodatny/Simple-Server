@@ -30,7 +30,8 @@ class ResponseBuilder {
         writer.println("Server: Java HTTP Server");
         writer.println("Content-type: " + content + "; charset=utf-8");
         writer.println("Content-length: " + length);
-        writer.println(); // blank line between headers and content, very important!
+        // blank line between headers and content, very important!
+        writer.println();
         writer.flush(); // flush character output stream buffer
     }
 

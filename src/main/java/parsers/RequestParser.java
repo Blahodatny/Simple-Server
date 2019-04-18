@@ -14,14 +14,10 @@ public class RequestParser {
     public RequestParser(Socket socket) {
         try {
             reader = new BufferedReader(
-                    new InputStreamReader(
-                            socket.getInputStream()
-                    )
-            );
+                    new InputStreamReader(socket.getInputStream()));
             // we parse the request with a string tokenizer
-            tokenizer = new StringTokenizer(
-                    reader.readLine()  // get first line of the request from the client
-            );
+            // get first line of the request from the client
+            tokenizer = new StringTokenizer(reader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
